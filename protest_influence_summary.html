@@ -1,0 +1,2275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Protest Movement Influence Summary</title>
+  <style>
+    :root {
+      --bg: #f6f4ef;
+      --panel: #ffffff;
+      --ink: #1f2933;
+      --muted: #5d6b78;
+      --positive: #1f7a4d;
+      --negative: #b42318;
+      --node: #2f4a68;
+      --border: #d8dde3;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(47, 74, 104, 0.08), transparent 28rem),
+        var(--bg);
+    }
+
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .nav {
+      margin-bottom: 18px;
+      font-size: 0.95rem;
+    }
+
+    .nav a {
+      color: var(--node);
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 1.9rem;
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle, .note {
+      color: var(--muted);
+      line-height: 1.55;
+      max-width: 920px;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin: 20px 0 16px;
+    }
+
+    .controls label {
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+
+    .btn-group {
+      display: inline-flex;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      overflow: hidden;
+      background: var(--panel);
+    }
+
+    .btn-group button {
+      border: 0;
+      background: transparent;
+      padding: 10px 16px;
+      cursor: pointer;
+      font: inherit;
+      color: var(--ink);
+    }
+
+    .btn-group button.active {
+      background: var(--node);
+      color: white;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(31, 41, 51, 0.06);
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+
+    thead th {
+      text-align: left;
+      padding: 14px 16px;
+      background: #f8f9fb;
+      border-bottom: 1px solid var(--border);
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    tbody td {
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(216, 221, 227, 0.8);
+      vertical-align: middle;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: 0;
+    }
+
+    tbody tr.influenced td:first-child {
+      color: var(--positive);
+      font-weight: 600;
+    }
+
+    tbody tr.influential td:first-child {
+      color: var(--negative);
+      font-weight: 600;
+    }
+
+    .metric {
+      font-variant-numeric: tabular-nums;
+    }
+
+    .bar-wrap {
+      min-width: 180px;
+    }
+
+    .bar-track {
+      display: flex;
+      height: 10px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: #eef1f4;
+    }
+
+    .bar-in {
+      background: var(--positive);
+    }
+
+    .bar-out {
+      background: #6b8cae;
+    }
+
+    .bar-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .rank-note {
+      padding: 12px 16px 16px;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.45;
+      border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <p class="nav"><a href="protest_diffusion_network.html">← Back to network visualization</a></p>
+    <h1>Movement Influence Summary</h1>
+    <p class="subtitle">
+      Categories ranked from <strong>most influenced</strong> (other movement types most strongly
+      lead to this type through significant positive lagged ties) to
+      <strong>most influential</strong> (this type most strongly leads to other movement types).
+    </p>
+    <p class="note">
+      Rankings use statistically significant <em>positive</em> Model 2 coefficients only.
+      Incoming weight is the sum of positive coefficients on ties pointing <em>into</em> a category;
+      outgoing weight is the sum on ties pointing <em>out</em>. Categories with high incoming and
+      low outgoing mass appear first; categories with high outgoing and low incoming mass appear last.
+    </p>
+
+    <div class="controls">
+      <label for="sig-buttons">Include ties significant at:</label>
+      <div class="btn-group" id="sig-buttons">
+        <button data-level="sig_05" class="active" type="button">p &lt; 0.05</button>
+        <button data-level="sig_01" type="button">p &lt; 0.01</button>
+        <button data-level="sig_001" type="button">p &lt; 0.001</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <table>
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Movement category</th>
+            <th>Incoming + weight</th>
+            <th>Outgoing + weight</th>
+            <th>Balance (in − out)</th>
+            <th>In vs out</th>
+          </tr>
+        </thead>
+        <tbody id="summary-body"></tbody>
+      </table>
+      <div class="rank-note" id="rank-note"></div>
+    </div>
+  </div>
+
+  <script>
+    const DATA = [
+  {
+    "source_label": "Education",
+    "target_label": "Governance & Politics",
+    "coefficient": -0.000949,
+    "stars": "**",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": false
+  },
+  {
+    "source_label": "Labor",
+    "target_label": "Governance & Politics",
+    "coefficient": -0.000342,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Human Rights & Identity",
+    "target_label": "Governance & Politics",
+    "coefficient": 3.98e-05,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Justice & Accountability",
+    "target_label": "Governance & Politics",
+    "coefficient": 0.000944,
+    "stars": "***",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": true
+  },
+  {
+    "source_label": "Security & Conflict",
+    "target_label": "Governance & Politics",
+    "coefficient": -0.00112,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Health & Social Welfare",
+    "target_label": "Governance & Politics",
+    "coefficient": 0.00148,
+    "stars": "*",
+    "sig_05": true,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Other",
+    "target_label": "Governance & Politics",
+    "coefficient": 0.00213,
+    "stars": "*",
+    "sig_05": true,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Religion & Belief",
+    "target_label": "Governance & Politics",
+    "coefficient": 0.000167,
+    "stars": "***",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": true
+  },
+  {
+    "source_label": "Prices & Economy",
+    "target_label": "Governance & Politics",
+    "coefficient": -0.000421,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Public Services & Infrastructure",
+    "target_label": "Governance & Politics",
+    "coefficient": 0.000601,
+    "stars": "*",
+    "sig_05": true,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "International Solidarity & Foreign Policy",
+    "target_label": "Governance & Politics",
+    "coefficient": 0.000299,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Environment",
+    "target_label": "Governance & Politics",
+    "coefficient": -0.00113,
+    "stars": "***",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": true
+  },
+  {
+    "source_label": "Agriculture & Rural",
+    "target_label": "Governance & Politics",
+    "coefficient": 0.000614,
+    "stars": "*",
+    "sig_05": true,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Land, Property & Housing",
+    "target_label": "Governance & Politics",
+    "coefficient": 0.00126,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Governance & Politics",
+    "target_label": "Education",
+    "coefficient": -0.000166,
+    "stars": "**",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": false
+  },
+  {
+    "source_label": "Labor",
+    "target_label": "Education",
+    "coefficient": -3.61e-05,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Human Rights & Identity",
+    "target_label": "Education",
+    "coefficient": 6.09e-05,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Justice & Accountability",
+    "target_label": "Education",
+    "coefficient": 0.000123,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Security & Conflict",
+    "target_label": "Education",
+    "coefficient": -1.32e-05,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Health & Social Welfare",
+    "target_label": "Education",
+    "coefficient": -8.51e-05,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Other",
+    "target_label": "Education",
+    "coefficient": 0.00495,
+    "stars": "***",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": true
+  },
+  {
+    "source_label": "Religion & Belief",
+    "target_label": "Education",
+    "coefficient": 0.000612,
+    "stars": "**",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": false
+  },
+  {
+    "source_label": "Prices & Economy",
+    "target_label": "Education",
+    "coefficient": 0.000475,
+    "stars": "**",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": false
+  },
+  {
+    "source_label": "Public Services & Infrastructure",
+    "target_label": "Education",
+    "coefficient": 0.000226,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "International Solidarity & Foreign Policy",
+    "target_label": "Education",
+    "coefficient": -0.000211,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Environment",
+    "target_label": "Education",
+    "coefficient": -0.00112,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Agriculture & Rural",
+    "target_label": "Education",
+    "coefficient": 0.000901,
+    "stars": "***",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": true
+  },
+  {
+    "source_label": "Land, Property & Housing",
+    "target_label": "Education",
+    "coefficient": 0.0022,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Governance & Politics",
+    "target_label": "Labor",
+    "coefficient": 1.03e-05,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Education",
+    "target_label": "Labor",
+    "coefficient": 0.00068,
+    "stars": "**",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": false
+  },
+  {
+    "source_label": "Human Rights & Identity",
+    "target_label": "Labor",
+    "coefficient": 1.46e-05,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Justice & Accountability",
+    "target_label": "Labor",
+    "coefficient": -4.88e-05,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Security & Conflict",
+    "target_label": "Labor",
+    "coefficient": -0.000616,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Health & Social Welfare",
+    "target_label": "Labor",
+    "coefficient": 0.000288,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Other",
+    "target_label": "Labor",
+    "coefficient": 0.00155,
+    "stars": "**",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": false
+  },
+  {
+    "source_label": "Religion & Belief",
+    "target_label": "Labor",
+    "coefficient": 0.000134,
+    "stars": "*",
+    "sig_05": true,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Prices & Economy",
+    "target_label": "Labor",
+    "coefficient": 0.000305,
+    "stars": "*",
+    "sig_05": true,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Public Services & Infrastructure",
+    "target_label": "Labor",
+    "coefficient": 0.000292,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "International Solidarity & Foreign Policy",
+    "target_label": "Labor",
+    "coefficient": 5.22e-05,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Environment",
+    "target_label": "Labor",
+    "coefficient": -0.000516,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Agriculture & Rural",
+    "target_label": "Labor",
+    "coefficient": 2.85e-06,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Land, Property & Housing",
+    "target_label": "Labor",
+    "coefficient": -1.47e-06,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Governance & Politics",
+    "target_label": "Human Rights & Identity",
+    "coefficient": -0.000139,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Education",
+    "target_label": "Human Rights & Identity",
+    "coefficient": 0.00208,
+    "stars": "***",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": true
+  },
+  {
+    "source_label": "Labor",
+    "target_label": "Human Rights & Identity",
+    "coefficient": 9.74e-05,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Justice & Accountability",
+    "target_label": "Human Rights & Identity",
+    "coefficient": 0.00109,
+    "stars": "***",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": true
+  },
+  {
+    "source_label": "Security & Conflict",
+    "target_label": "Human Rights & Identity",
+    "coefficient": 0.00121,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Health & Social Welfare",
+    "target_label": "Human Rights & Identity",
+    "coefficient": 0.00106,
+    "stars": "*",
+    "sig_05": true,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Other",
+    "target_label": "Human Rights & Identity",
+    "coefficient": -0.000206,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Religion & Belief",
+    "target_label": "Human Rights & Identity",
+    "coefficient": -5.64e-05,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Prices & Economy",
+    "target_label": "Human Rights & Identity",
+    "coefficient": 5.58e-06,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Public Services & Infrastructure",
+    "target_label": "Human Rights & Identity",
+    "coefficient": 2.93e-05,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "International Solidarity & Foreign Policy",
+    "target_label": "Human Rights & Identity",
+    "coefficient": 0.000147,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Environment",
+    "target_label": "Human Rights & Identity",
+    "coefficient": -0.000853,
+    "stars": "**",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": false
+  },
+  {
+    "source_label": "Agriculture & Rural",
+    "target_label": "Human Rights & Identity",
+    "coefficient": 0.000922,
+    "stars": "**",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": false
+  },
+  {
+    "source_label": "Land, Property & Housing",
+    "target_label": "Human Rights & Identity",
+    "coefficient": 0.00336,
+    "stars": "*",
+    "sig_05": true,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Governance & Politics",
+    "target_label": "Justice & Accountability",
+    "coefficient": 5.33e-05,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Education",
+    "target_label": "Justice & Accountability",
+    "coefficient": 0.000629,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Labor",
+    "target_label": "Justice & Accountability",
+    "coefficient": -0.000425,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Human Rights & Identity",
+    "target_label": "Justice & Accountability",
+    "coefficient": 0.000177,
+    "stars": "**",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": false
+  },
+  {
+    "source_label": "Security & Conflict",
+    "target_label": "Justice & Accountability",
+    "coefficient": -0.000407,
+    "stars": "**",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": false
+  },
+  {
+    "source_label": "Health & Social Welfare",
+    "target_label": "Justice & Accountability",
+    "coefficient": 0.00183,
+    "stars": "*",
+    "sig_05": true,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Other",
+    "target_label": "Justice & Accountability",
+    "coefficient": 0.000887,
+    "stars": "***",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": true
+  },
+  {
+    "source_label": "Religion & Belief",
+    "target_label": "Justice & Accountability",
+    "coefficient": 4.09e-05,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Prices & Economy",
+    "target_label": "Justice & Accountability",
+    "coefficient": 0.000338,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Public Services & Infrastructure",
+    "target_label": "Justice & Accountability",
+    "coefficient": -0.000143,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "International Solidarity & Foreign Policy",
+    "target_label": "Justice & Accountability",
+    "coefficient": -4.32e-05,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Environment",
+    "target_label": "Justice & Accountability",
+    "coefficient": -0.00115,
+    "stars": "***",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": true
+  },
+  {
+    "source_label": "Agriculture & Rural",
+    "target_label": "Justice & Accountability",
+    "coefficient": 0.000518,
+    "stars": "*",
+    "sig_05": true,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Land, Property & Housing",
+    "target_label": "Justice & Accountability",
+    "coefficient": 0.000905,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Governance & Politics",
+    "target_label": "Security & Conflict",
+    "coefficient": 0.000191,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Education",
+    "target_label": "Security & Conflict",
+    "coefficient": -0.00116,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Labor",
+    "target_label": "Security & Conflict",
+    "coefficient": 0.000975,
+    "stars": "*",
+    "sig_05": true,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Human Rights & Identity",
+    "target_label": "Security & Conflict",
+    "coefficient": 0.000102,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Justice & Accountability",
+    "target_label": "Security & Conflict",
+    "coefficient": 0.00124,
+    "stars": "***",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": true
+  },
+  {
+    "source_label": "Health & Social Welfare",
+    "target_label": "Security & Conflict",
+    "coefficient": -0.00192,
+    "stars": "**",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": false
+  },
+  {
+    "source_label": "Other",
+    "target_label": "Security & Conflict",
+    "coefficient": 0.00256,
+    "stars": "**",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": false
+  },
+  {
+    "source_label": "Religion & Belief",
+    "target_label": "Security & Conflict",
+    "coefficient": 0.00027,
+    "stars": "**",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": false
+  },
+  {
+    "source_label": "Prices & Economy",
+    "target_label": "Security & Conflict",
+    "coefficient": 0.000346,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Public Services & Infrastructure",
+    "target_label": "Security & Conflict",
+    "coefficient": -4.92e-05,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "International Solidarity & Foreign Policy",
+    "target_label": "Security & Conflict",
+    "coefficient": -0.000834,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Environment",
+    "target_label": "Security & Conflict",
+    "coefficient": -0.00138,
+    "stars": "***",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": true
+  },
+  {
+    "source_label": "Agriculture & Rural",
+    "target_label": "Security & Conflict",
+    "coefficient": -2.57e-05,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Land, Property & Housing",
+    "target_label": "Security & Conflict",
+    "coefficient": 0.00414,
+    "stars": "*",
+    "sig_05": true,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Governance & Politics",
+    "target_label": "Health & Social Welfare",
+    "coefficient": 0.000105,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Education",
+    "target_label": "Health & Social Welfare",
+    "coefficient": 0.000914,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Labor",
+    "target_label": "Health & Social Welfare",
+    "coefficient": 2.38e-05,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Human Rights & Identity",
+    "target_label": "Health & Social Welfare",
+    "coefficient": 0.000122,
+    "stars": "***",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": true
+  },
+  {
+    "source_label": "Justice & Accountability",
+    "target_label": "Health & Social Welfare",
+    "coefficient": 0.000848,
+    "stars": "***",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": true
+  },
+  {
+    "source_label": "Security & Conflict",
+    "target_label": "Health & Social Welfare",
+    "coefficient": 0.000368,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Other",
+    "target_label": "Health & Social Welfare",
+    "coefficient": 0.000169,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Religion & Belief",
+    "target_label": "Health & Social Welfare",
+    "coefficient": 1.77e-05,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Prices & Economy",
+    "target_label": "Health & Social Welfare",
+    "coefficient": 0.000436,
+    "stars": "*",
+    "sig_05": true,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Public Services & Infrastructure",
+    "target_label": "Health & Social Welfare",
+    "coefficient": -0.000158,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "International Solidarity & Foreign Policy",
+    "target_label": "Health & Social Welfare",
+    "coefficient": 0.000237,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Environment",
+    "target_label": "Health & Social Welfare",
+    "coefficient": -0.00098,
+    "stars": "***",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": true
+  },
+  {
+    "source_label": "Agriculture & Rural",
+    "target_label": "Health & Social Welfare",
+    "coefficient": 0.000298,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Land, Property & Housing",
+    "target_label": "Health & Social Welfare",
+    "coefficient": 0.000296,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Governance & Politics",
+    "target_label": "Religion & Belief",
+    "coefficient": -0.000168,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Education",
+    "target_label": "Religion & Belief",
+    "coefficient": 0.00177,
+    "stars": "*",
+    "sig_05": true,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Labor",
+    "target_label": "Religion & Belief",
+    "coefficient": 0.000138,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Human Rights & Identity",
+    "target_label": "Religion & Belief",
+    "coefficient": 0.000267,
+    "stars": "**",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": false
+  },
+  {
+    "source_label": "Justice & Accountability",
+    "target_label": "Religion & Belief",
+    "coefficient": -0.000187,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Security & Conflict",
+    "target_label": "Religion & Belief",
+    "coefficient": -0.000763,
+    "stars": "*",
+    "sig_05": true,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Health & Social Welfare",
+    "target_label": "Religion & Belief",
+    "coefficient": 0.00125,
+    "stars": "***",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": true
+  },
+  {
+    "source_label": "Other",
+    "target_label": "Religion & Belief",
+    "coefficient": 0.000354,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Prices & Economy",
+    "target_label": "Religion & Belief",
+    "coefficient": -0.000505,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Public Services & Infrastructure",
+    "target_label": "Religion & Belief",
+    "coefficient": 0.000395,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "International Solidarity & Foreign Policy",
+    "target_label": "Religion & Belief",
+    "coefficient": 0.000298,
+    "stars": "*",
+    "sig_05": true,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Environment",
+    "target_label": "Religion & Belief",
+    "coefficient": -8.72e-05,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Agriculture & Rural",
+    "target_label": "Religion & Belief",
+    "coefficient": 0.00089,
+    "stars": "***",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": true
+  },
+  {
+    "source_label": "Land, Property & Housing",
+    "target_label": "Religion & Belief",
+    "coefficient": 0.00294,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Governance & Politics",
+    "target_label": "Prices & Economy",
+    "coefficient": -3.99e-05,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Education",
+    "target_label": "Prices & Economy",
+    "coefficient": 0.000113,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Labor",
+    "target_label": "Prices & Economy",
+    "coefficient": 0.00121,
+    "stars": "***",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": true
+  },
+  {
+    "source_label": "Human Rights & Identity",
+    "target_label": "Prices & Economy",
+    "coefficient": -0.000175,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Justice & Accountability",
+    "target_label": "Prices & Economy",
+    "coefficient": 0.00022,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Security & Conflict",
+    "target_label": "Prices & Economy",
+    "coefficient": -0.00166,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Health & Social Welfare",
+    "target_label": "Prices & Economy",
+    "coefficient": -0.00152,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Other",
+    "target_label": "Prices & Economy",
+    "coefficient": 0.00152,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Religion & Belief",
+    "target_label": "Prices & Economy",
+    "coefficient": 0.000299,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Public Services & Infrastructure",
+    "target_label": "Prices & Economy",
+    "coefficient": 0.000564,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "International Solidarity & Foreign Policy",
+    "target_label": "Prices & Economy",
+    "coefficient": 0.000535,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Environment",
+    "target_label": "Prices & Economy",
+    "coefficient": 0.000254,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Agriculture & Rural",
+    "target_label": "Prices & Economy",
+    "coefficient": -0.000138,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Land, Property & Housing",
+    "target_label": "Prices & Economy",
+    "coefficient": -0.000398,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Governance & Politics",
+    "target_label": "Public Services & Infrastructure",
+    "coefficient": 0.00025,
+    "stars": "**",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": false
+  },
+  {
+    "source_label": "Education",
+    "target_label": "Public Services & Infrastructure",
+    "coefficient": -0.00212,
+    "stars": "**",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": false
+  },
+  {
+    "source_label": "Labor",
+    "target_label": "Public Services & Infrastructure",
+    "coefficient": 0.000794,
+    "stars": "*",
+    "sig_05": true,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Human Rights & Identity",
+    "target_label": "Public Services & Infrastructure",
+    "coefficient": 7.07e-05,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Justice & Accountability",
+    "target_label": "Public Services & Infrastructure",
+    "coefficient": 0.00106,
+    "stars": "*",
+    "sig_05": true,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Security & Conflict",
+    "target_label": "Public Services & Infrastructure",
+    "coefficient": -0.00167,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Health & Social Welfare",
+    "target_label": "Public Services & Infrastructure",
+    "coefficient": 0.00107,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Other",
+    "target_label": "Public Services & Infrastructure",
+    "coefficient": 0.00193,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Religion & Belief",
+    "target_label": "Public Services & Infrastructure",
+    "coefficient": 0.000304,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Prices & Economy",
+    "target_label": "Public Services & Infrastructure",
+    "coefficient": -0.00121,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "International Solidarity & Foreign Policy",
+    "target_label": "Public Services & Infrastructure",
+    "coefficient": -9.02e-05,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Environment",
+    "target_label": "Public Services & Infrastructure",
+    "coefficient": -0.000541,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Agriculture & Rural",
+    "target_label": "Public Services & Infrastructure",
+    "coefficient": 0.000381,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Land, Property & Housing",
+    "target_label": "Public Services & Infrastructure",
+    "coefficient": -0.000407,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Governance & Politics",
+    "target_label": "International Solidarity & Foreign Policy",
+    "coefficient": 0.000303,
+    "stars": "***",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": true
+  },
+  {
+    "source_label": "Education",
+    "target_label": "International Solidarity & Foreign Policy",
+    "coefficient": -0.000304,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Labor",
+    "target_label": "International Solidarity & Foreign Policy",
+    "coefficient": 0.000108,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Human Rights & Identity",
+    "target_label": "International Solidarity & Foreign Policy",
+    "coefficient": 0.000246,
+    "stars": "*",
+    "sig_05": true,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Justice & Accountability",
+    "target_label": "International Solidarity & Foreign Policy",
+    "coefficient": -8.29e-05,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Security & Conflict",
+    "target_label": "International Solidarity & Foreign Policy",
+    "coefficient": 0.000473,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Health & Social Welfare",
+    "target_label": "International Solidarity & Foreign Policy",
+    "coefficient": 0.000934,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Other",
+    "target_label": "International Solidarity & Foreign Policy",
+    "coefficient": -0.000149,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Religion & Belief",
+    "target_label": "International Solidarity & Foreign Policy",
+    "coefficient": 0.00015,
+    "stars": "**",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": false
+  },
+  {
+    "source_label": "Prices & Economy",
+    "target_label": "International Solidarity & Foreign Policy",
+    "coefficient": 0.00102,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Public Services & Infrastructure",
+    "target_label": "International Solidarity & Foreign Policy",
+    "coefficient": -0.000337,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Environment",
+    "target_label": "International Solidarity & Foreign Policy",
+    "coefficient": 0.000101,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Agriculture & Rural",
+    "target_label": "International Solidarity & Foreign Policy",
+    "coefficient": 0.000269,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Land, Property & Housing",
+    "target_label": "International Solidarity & Foreign Policy",
+    "coefficient": -0.0017,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Governance & Politics",
+    "target_label": "Environment",
+    "coefficient": -0.00015,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Education",
+    "target_label": "Environment",
+    "coefficient": 0.00157,
+    "stars": "***",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": true
+  },
+  {
+    "source_label": "Labor",
+    "target_label": "Environment",
+    "coefficient": -2.61e-05,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Human Rights & Identity",
+    "target_label": "Environment",
+    "coefficient": 3.79e-05,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Justice & Accountability",
+    "target_label": "Environment",
+    "coefficient": 0.000213,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Security & Conflict",
+    "target_label": "Environment",
+    "coefficient": -0.000602,
+    "stars": "**",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": false
+  },
+  {
+    "source_label": "Health & Social Welfare",
+    "target_label": "Environment",
+    "coefficient": 0.00197,
+    "stars": "*",
+    "sig_05": true,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Other",
+    "target_label": "Environment",
+    "coefficient": 0.00112,
+    "stars": "***",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": true
+  },
+  {
+    "source_label": "Religion & Belief",
+    "target_label": "Environment",
+    "coefficient": 0.000147,
+    "stars": "**",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": false
+  },
+  {
+    "source_label": "Prices & Economy",
+    "target_label": "Environment",
+    "coefficient": 0.000477,
+    "stars": "*",
+    "sig_05": true,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Public Services & Infrastructure",
+    "target_label": "Environment",
+    "coefficient": -0.000423,
+    "stars": "*",
+    "sig_05": true,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "International Solidarity & Foreign Policy",
+    "target_label": "Environment",
+    "coefficient": -0.000606,
+    "stars": "***",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": true
+  },
+  {
+    "source_label": "Agriculture & Rural",
+    "target_label": "Environment",
+    "coefficient": 0.000204,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Land, Property & Housing",
+    "target_label": "Environment",
+    "coefficient": -0.00228,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Governance & Politics",
+    "target_label": "Agriculture & Rural",
+    "coefficient": 0.000198,
+    "stars": "**",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": false
+  },
+  {
+    "source_label": "Education",
+    "target_label": "Agriculture & Rural",
+    "coefficient": -0.000127,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Labor",
+    "target_label": "Agriculture & Rural",
+    "coefficient": 9.28e-05,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Human Rights & Identity",
+    "target_label": "Agriculture & Rural",
+    "coefficient": 0.000154,
+    "stars": "*",
+    "sig_05": true,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Justice & Accountability",
+    "target_label": "Agriculture & Rural",
+    "coefficient": 0.00112,
+    "stars": "**",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": false
+  },
+  {
+    "source_label": "Security & Conflict",
+    "target_label": "Agriculture & Rural",
+    "coefficient": 0.000422,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Health & Social Welfare",
+    "target_label": "Agriculture & Rural",
+    "coefficient": -0.00147,
+    "stars": "**",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": false
+  },
+  {
+    "source_label": "Other",
+    "target_label": "Agriculture & Rural",
+    "coefficient": 0.00175,
+    "stars": "*",
+    "sig_05": true,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Religion & Belief",
+    "target_label": "Agriculture & Rural",
+    "coefficient": 2.95e-05,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Prices & Economy",
+    "target_label": "Agriculture & Rural",
+    "coefficient": 0.00032,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Public Services & Infrastructure",
+    "target_label": "Agriculture & Rural",
+    "coefficient": -0.00132,
+    "stars": "**",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": false
+  },
+  {
+    "source_label": "International Solidarity & Foreign Policy",
+    "target_label": "Agriculture & Rural",
+    "coefficient": 0.000125,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Environment",
+    "target_label": "Agriculture & Rural",
+    "coefficient": -0.000621,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Land, Property & Housing",
+    "target_label": "Agriculture & Rural",
+    "coefficient": 0.0064,
+    "stars": "*",
+    "sig_05": true,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Governance & Politics",
+    "target_label": "Land, Property & Housing",
+    "coefficient": 4.3e-05,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Education",
+    "target_label": "Land, Property & Housing",
+    "coefficient": 0.000841,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Labor",
+    "target_label": "Land, Property & Housing",
+    "coefficient": 0.000355,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Human Rights & Identity",
+    "target_label": "Land, Property & Housing",
+    "coefficient": 0.000195,
+    "stars": "***",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": true
+  },
+  {
+    "source_label": "Justice & Accountability",
+    "target_label": "Land, Property & Housing",
+    "coefficient": 0.00041,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Security & Conflict",
+    "target_label": "Land, Property & Housing",
+    "coefficient": 0.000103,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Health & Social Welfare",
+    "target_label": "Land, Property & Housing",
+    "coefficient": -0.000168,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Other",
+    "target_label": "Land, Property & Housing",
+    "coefficient": 0.00128,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Religion & Belief",
+    "target_label": "Land, Property & Housing",
+    "coefficient": 0.000329,
+    "stars": "***",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": true
+  },
+  {
+    "source_label": "Prices & Economy",
+    "target_label": "Land, Property & Housing",
+    "coefficient": -0.000406,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Public Services & Infrastructure",
+    "target_label": "Land, Property & Housing",
+    "coefficient": -0.000122,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "International Solidarity & Foreign Policy",
+    "target_label": "Land, Property & Housing",
+    "coefficient": 0.000493,
+    "stars": "**",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": false
+  },
+  {
+    "source_label": "Environment",
+    "target_label": "Land, Property & Housing",
+    "coefficient": -0.00023,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Agriculture & Rural",
+    "target_label": "Land, Property & Housing",
+    "coefficient": -9.66e-07,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Governance & Politics",
+    "target_label": "Other",
+    "coefficient": 4.02e-05,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Education",
+    "target_label": "Other",
+    "coefficient": 0.000261,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Labor",
+    "target_label": "Other",
+    "coefficient": 0.00063,
+    "stars": "*",
+    "sig_05": true,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Human Rights & Identity",
+    "target_label": "Other",
+    "coefficient": 9.78e-05,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Justice & Accountability",
+    "target_label": "Other",
+    "coefficient": 0.000646,
+    "stars": "**",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": false
+  },
+  {
+    "source_label": "Security & Conflict",
+    "target_label": "Other",
+    "coefficient": -0.000411,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Health & Social Welfare",
+    "target_label": "Other",
+    "coefficient": 0.000647,
+    "stars": "*",
+    "sig_05": true,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Religion & Belief",
+    "target_label": "Other",
+    "coefficient": 6.52e-05,
+    "stars": "***",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": true
+  },
+  {
+    "source_label": "Prices & Economy",
+    "target_label": "Other",
+    "coefficient": 0.00113,
+    "stars": "*",
+    "sig_05": true,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Public Services & Infrastructure",
+    "target_label": "Other",
+    "coefficient": -0.000165,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "International Solidarity & Foreign Policy",
+    "target_label": "Other",
+    "coefficient": -0.00175,
+    "stars": "***",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": true
+  },
+  {
+    "source_label": "Environment",
+    "target_label": "Other",
+    "coefficient": -0.000714,
+    "stars": "***",
+    "sig_05": true,
+    "sig_01": true,
+    "sig_001": true
+  },
+  {
+    "source_label": "Agriculture & Rural",
+    "target_label": "Other",
+    "coefficient": 0.000185,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  },
+  {
+    "source_label": "Land, Property & Housing",
+    "target_label": "Other",
+    "coefficient": 0.000243,
+    "stars": "",
+    "sig_05": false,
+    "sig_01": false,
+    "sig_001": false
+  }
+];
+    const CATEGORIES = [
+  {
+    "id": "gov_pol",
+    "label": "Governance & Politics"
+  },
+  {
+    "id": "edu",
+    "label": "Education"
+  },
+  {
+    "id": "labor",
+    "label": "Labor"
+  },
+  {
+    "id": "human_rights",
+    "label": "Human Rights & Identity"
+  },
+  {
+    "id": "justice",
+    "label": "Justice & Accountability"
+  },
+  {
+    "id": "security",
+    "label": "Security & Conflict"
+  },
+  {
+    "id": "health",
+    "label": "Health & Social Welfare"
+  },
+  {
+    "id": "religion",
+    "label": "Religion & Belief"
+  },
+  {
+    "id": "economy",
+    "label": "Prices & Economy"
+  },
+  {
+    "id": "pub_serv",
+    "label": "Public Services & Infrastructure"
+  },
+  {
+    "id": "intl_solidarity",
+    "label": "International Solidarity & Foreign Policy"
+  },
+  {
+    "id": "enviro",
+    "label": "Environment"
+  },
+  {
+    "id": "agri",
+    "label": "Agriculture & Rural"
+  },
+  {
+    "id": "land",
+    "label": "Land, Property & Housing"
+  },
+  {
+    "id": "other",
+    "label": "Other"
+  }
+];
+    let currentLevel = "sig_05";
+
+    function formatCoef(value) {
+      return value.toExponential(3);
+    }
+
+    function computeRows(level) {
+      const stats = new Map(
+        CATEGORIES.map((cat) => [
+          cat.label,
+          {
+            label: cat.label,
+            inWeight: 0,
+            outWeight: 0,
+            inCount: 0,
+            outCount: 0,
+          },
+        ])
+      );
+
+      DATA.forEach((row) => {
+        if (!row[level] || row.coefficient <= 0) return;
+        const incoming = stats.get(row.target_label);
+        const outgoing = stats.get(row.source_label);
+        incoming.inWeight += row.coefficient;
+        incoming.inCount += 1;
+        outgoing.outWeight += row.coefficient;
+        outgoing.outCount += 1;
+      });
+
+      return Array.from(stats.values())
+        .map((row) => ({
+          ...row,
+          balance: row.inWeight - row.outWeight,
+        }))
+        .sort((a, b) => b.balance - a.balance);
+    }
+
+    function rowClass(index, total) {
+      if (index === 0) return "influenced";
+      if (index === total - 1) return "influential";
+      return "";
+    }
+
+    function render() {
+      const rows = computeRows(currentLevel);
+      const maxTotal = Math.max(
+        ...rows.map((row) => Math.max(row.inWeight, row.outWeight)),
+        1e-9
+      );
+
+      const body = d3SelectBody(rows, maxTotal);
+      document.getElementById("summary-body").innerHTML = body;
+
+      const mostInfluenced = rows[0];
+      const mostInfluential = rows[rows.length - 1];
+      document.getElementById("rank-note").textContent =
+        `At ${currentLevel === "sig_05" ? "p < 0.05" : currentLevel === "sig_01" ? "p < 0.01" : "p < 0.001"}, ` +
+        `${mostInfluenced.label} is the most influenced category (balance ${formatCoef(mostInfluenced.balance)}), ` +
+        `and ${mostInfluential.label} is the most influential (balance ${formatCoef(mostInfluential.balance)}).`;
+    }
+
+    function d3SelectBody(rows, maxTotal) {
+      return rows.map((row, index) => {
+        const inShare = row.inWeight / (row.inWeight + row.outWeight || 1);
+        const outShare = 1 - inShare;
+        const cls = rowClass(index, rows.length);
+        return `
+          <tr class="${cls}">
+            <td>${index + 1}</td>
+            <td>${row.label}</td>
+            <td class="metric">${row.inCount} / ${formatCoef(row.inWeight)}</td>
+            <td class="metric">${row.outCount} / ${formatCoef(row.outWeight)}</td>
+            <td class="metric">${formatCoef(row.balance)}</td>
+            <td class="bar-wrap">
+              <div class="bar-track">
+                <div class="bar-in" style="width:${(inShare * 100).toFixed(1)}%"></div>
+                <div class="bar-out" style="width:${(outShare * 100).toFixed(1)}%"></div>
+              </div>
+              <div class="bar-labels">
+                <span>in</span>
+                <span>out</span>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    document.querySelectorAll("#sig-buttons button").forEach((button) => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll("#sig-buttons button").forEach((b) => b.classList.remove("active"));
+        button.classList.add("active");
+        currentLevel = button.dataset.level;
+        render();
+      });
+    });
+
+    render();
+  </script>
+</body>
+</html>

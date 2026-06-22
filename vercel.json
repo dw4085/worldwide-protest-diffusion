@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/", "destination": "/protest_diffusion_network.html" }
+  ]
+}

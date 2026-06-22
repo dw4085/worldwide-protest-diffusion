@@ -1,0 +1,211 @@
+source_category,target_category,source_var,target_var,coefficient,t_stat,stars,sig_05,sig_01,sig_001,model
+Education,Governance & Politics,edu_cnt_l1,gov_pol_cnt,-0.000949,-2.77,**,True,True,False,2
+Labor,Governance & Politics,labor_cnt_l1,gov_pol_cnt,-0.000342,-0.95,,False,False,False,2
+Human Rights & Identity,Governance & Politics,human_rights_cnt_l1,gov_pol_cnt,3.98e-05,0.44,,False,False,False,2
+Justice & Accountability,Governance & Politics,justice_cnt_l1,gov_pol_cnt,0.000944,5.35,***,True,True,True,2
+Security & Conflict,Governance & Politics,security_cnt_l1,gov_pol_cnt,-0.00112,-1.88,,False,False,False,2
+Health & Social Welfare,Governance & Politics,health_cnt_l1,gov_pol_cnt,0.00148,2.16,*,True,False,False,2
+Other,Governance & Politics,other_cnt_l1,gov_pol_cnt,0.00213,2.26,*,True,False,False,2
+Religion & Belief,Governance & Politics,religion_cnt_l1,gov_pol_cnt,0.000167,8.64,***,True,True,True,2
+Prices & Economy,Governance & Politics,economy_cnt_l1,gov_pol_cnt,-0.000421,-0.63,,False,False,False,2
+Public Services & Infrastructure,Governance & Politics,pub_serv_cnt_l1,gov_pol_cnt,0.000601,1.98,*,True,False,False,2
+International Solidarity & Foreign Policy,Governance & Politics,intl_solidarity_cnt_l1,gov_pol_cnt,0.000299,0.95,,False,False,False,2
+Environment,Governance & Politics,enviro_cnt_l1,gov_pol_cnt,-0.00113,-5.14,***,True,True,True,2
+Agriculture & Rural,Governance & Politics,agri_cnt_l1,gov_pol_cnt,0.000614,2.45,*,True,False,False,2
+"Land, Property & Housing",Governance & Politics,land_cnt_l1,gov_pol_cnt,0.00126,0.76,,False,False,False,2
+Governance & Politics,Education,gov_pol_cnt_l1,edu_cnt,-0.000166,-2.61,**,True,True,False,2
+Labor,Education,labor_cnt_l1,edu_cnt,-3.61e-05,-0.16,,False,False,False,2
+Human Rights & Identity,Education,human_rights_cnt_l1,edu_cnt,6.09e-05,0.86,,False,False,False,2
+Justice & Accountability,Education,justice_cnt_l1,edu_cnt,0.000123,0.37,,False,False,False,2
+Security & Conflict,Education,security_cnt_l1,edu_cnt,-1.32e-05,-0.06,,False,False,False,2
+Health & Social Welfare,Education,health_cnt_l1,edu_cnt,-8.51e-05,-0.3,,False,False,False,2
+Other,Education,other_cnt_l1,edu_cnt,0.00495,4.44,***,True,True,True,2
+Religion & Belief,Education,religion_cnt_l1,edu_cnt,0.000612,2.79,**,True,True,False,2
+Prices & Economy,Education,economy_cnt_l1,edu_cnt,0.000475,2.93,**,True,True,False,2
+Public Services & Infrastructure,Education,pub_serv_cnt_l1,edu_cnt,0.000226,0.67,,False,False,False,2
+International Solidarity & Foreign Policy,Education,intl_solidarity_cnt_l1,edu_cnt,-0.000211,-0.76,,False,False,False,2
+Environment,Education,enviro_cnt_l1,edu_cnt,-0.00112,-1.54,,False,False,False,2
+Agriculture & Rural,Education,agri_cnt_l1,edu_cnt,0.000901,3.51,***,True,True,True,2
+"Land, Property & Housing",Education,land_cnt_l1,edu_cnt,0.0022,1.41,,False,False,False,2
+Governance & Politics,Labor,gov_pol_cnt_l1,labor_cnt,1.03e-05,0.23,,False,False,False,2
+Education,Labor,edu_cnt_l1,labor_cnt,0.00068,2.68,**,True,True,False,2
+Human Rights & Identity,Labor,human_rights_cnt_l1,labor_cnt,1.46e-05,0.39,,False,False,False,2
+Justice & Accountability,Labor,justice_cnt_l1,labor_cnt,-4.88e-05,-0.14,,False,False,False,2
+Security & Conflict,Labor,security_cnt_l1,labor_cnt,-0.000616,-1.74,,False,False,False,2
+Health & Social Welfare,Labor,health_cnt_l1,labor_cnt,0.000288,1.53,,False,False,False,2
+Other,Labor,other_cnt_l1,labor_cnt,0.00155,3.27,**,True,True,False,2
+Religion & Belief,Labor,religion_cnt_l1,labor_cnt,0.000134,2.25,*,True,False,False,2
+Prices & Economy,Labor,economy_cnt_l1,labor_cnt,0.000305,2.08,*,True,False,False,2
+Public Services & Infrastructure,Labor,pub_serv_cnt_l1,labor_cnt,0.000292,1.92,,False,False,False,2
+International Solidarity & Foreign Policy,Labor,intl_solidarity_cnt_l1,labor_cnt,5.22e-05,0.25,,False,False,False,2
+Environment,Labor,enviro_cnt_l1,labor_cnt,-0.000516,-1.43,,False,False,False,2
+Agriculture & Rural,Labor,agri_cnt_l1,labor_cnt,2.85e-06,0.02,,False,False,False,2
+"Land, Property & Housing",Labor,land_cnt_l1,labor_cnt,-1.47e-06,-0.0,,False,False,False,2
+Governance & Politics,Human Rights & Identity,gov_pol_cnt_l1,human_rights_cnt,-0.000139,-1.35,,False,False,False,2
+Education,Human Rights & Identity,edu_cnt_l1,human_rights_cnt,0.00208,4.31,***,True,True,True,2
+Labor,Human Rights & Identity,labor_cnt_l1,human_rights_cnt,9.74e-05,0.6,,False,False,False,2
+Justice & Accountability,Human Rights & Identity,justice_cnt_l1,human_rights_cnt,0.00109,4.14,***,True,True,True,2
+Security & Conflict,Human Rights & Identity,security_cnt_l1,human_rights_cnt,0.00121,1.27,,False,False,False,2
+Health & Social Welfare,Human Rights & Identity,health_cnt_l1,human_rights_cnt,0.00106,2.26,*,True,False,False,2
+Other,Human Rights & Identity,other_cnt_l1,human_rights_cnt,-0.000206,-0.48,,False,False,False,2
+Religion & Belief,Human Rights & Identity,religion_cnt_l1,human_rights_cnt,-5.64e-05,-0.77,,False,False,False,2
+Prices & Economy,Human Rights & Identity,economy_cnt_l1,human_rights_cnt,5.58e-06,0.01,,False,False,False,2
+Public Services & Infrastructure,Human Rights & Identity,pub_serv_cnt_l1,human_rights_cnt,2.93e-05,0.07,,False,False,False,2
+International Solidarity & Foreign Policy,Human Rights & Identity,intl_solidarity_cnt_l1,human_rights_cnt,0.000147,0.71,,False,False,False,2
+Environment,Human Rights & Identity,enviro_cnt_l1,human_rights_cnt,-0.000853,-2.87,**,True,True,False,2
+Agriculture & Rural,Human Rights & Identity,agri_cnt_l1,human_rights_cnt,0.000922,2.69,**,True,True,False,2
+"Land, Property & Housing",Human Rights & Identity,land_cnt_l1,human_rights_cnt,0.00336,2.56,*,True,False,False,2
+Governance & Politics,Justice & Accountability,gov_pol_cnt_l1,justice_cnt,5.33e-05,0.55,,False,False,False,2
+Education,Justice & Accountability,edu_cnt_l1,justice_cnt,0.000629,1.03,,False,False,False,2
+Labor,Justice & Accountability,labor_cnt_l1,justice_cnt,-0.000425,-1.72,,False,False,False,2
+Human Rights & Identity,Justice & Accountability,human_rights_cnt_l1,justice_cnt,0.000177,2.81,**,True,True,False,2
+Security & Conflict,Justice & Accountability,security_cnt_l1,justice_cnt,-0.000407,-2.83,**,True,True,False,2
+Health & Social Welfare,Justice & Accountability,health_cnt_l1,justice_cnt,0.00183,2.11,*,True,False,False,2
+Other,Justice & Accountability,other_cnt_l1,justice_cnt,0.000887,4.47,***,True,True,True,2
+Religion & Belief,Justice & Accountability,religion_cnt_l1,justice_cnt,4.09e-05,0.97,,False,False,False,2
+Prices & Economy,Justice & Accountability,economy_cnt_l1,justice_cnt,0.000338,0.93,,False,False,False,2
+Public Services & Infrastructure,Justice & Accountability,pub_serv_cnt_l1,justice_cnt,-0.000143,-0.6,,False,False,False,2
+International Solidarity & Foreign Policy,Justice & Accountability,intl_solidarity_cnt_l1,justice_cnt,-4.32e-05,-0.24,,False,False,False,2
+Environment,Justice & Accountability,enviro_cnt_l1,justice_cnt,-0.00115,-7.96,***,True,True,True,2
+Agriculture & Rural,Justice & Accountability,agri_cnt_l1,justice_cnt,0.000518,2.43,*,True,False,False,2
+"Land, Property & Housing",Justice & Accountability,land_cnt_l1,justice_cnt,0.000905,0.57,,False,False,False,2
+Governance & Politics,Security & Conflict,gov_pol_cnt_l1,security_cnt,0.000191,1.11,,False,False,False,2
+Education,Security & Conflict,edu_cnt_l1,security_cnt,-0.00116,-1.31,,False,False,False,2
+Labor,Security & Conflict,labor_cnt_l1,security_cnt,0.000975,2.51,*,True,False,False,2
+Human Rights & Identity,Security & Conflict,human_rights_cnt_l1,security_cnt,0.000102,1.63,,False,False,False,2
+Justice & Accountability,Security & Conflict,justice_cnt_l1,security_cnt,0.00124,4.69,***,True,True,True,2
+Health & Social Welfare,Security & Conflict,health_cnt_l1,security_cnt,-0.00192,-2.6,**,True,True,False,2
+Other,Security & Conflict,other_cnt_l1,security_cnt,0.00256,2.71,**,True,True,False,2
+Religion & Belief,Security & Conflict,religion_cnt_l1,security_cnt,0.00027,3.06,**,True,True,False,2
+Prices & Economy,Security & Conflict,economy_cnt_l1,security_cnt,0.000346,0.73,,False,False,False,2
+Public Services & Infrastructure,Security & Conflict,pub_serv_cnt_l1,security_cnt,-4.92e-05,-0.24,,False,False,False,2
+International Solidarity & Foreign Policy,Security & Conflict,intl_solidarity_cnt_l1,security_cnt,-0.000834,-1.45,,False,False,False,2
+Environment,Security & Conflict,enviro_cnt_l1,security_cnt,-0.00138,-3.29,***,True,True,True,2
+Agriculture & Rural,Security & Conflict,agri_cnt_l1,security_cnt,-2.57e-05,-0.06,,False,False,False,2
+"Land, Property & Housing",Security & Conflict,land_cnt_l1,security_cnt,0.00414,2.37,*,True,False,False,2
+Governance & Politics,Health & Social Welfare,gov_pol_cnt_l1,health_cnt,0.000105,1.02,,False,False,False,2
+Education,Health & Social Welfare,edu_cnt_l1,health_cnt,0.000914,1.5,,False,False,False,2
+Labor,Health & Social Welfare,labor_cnt_l1,health_cnt,2.38e-05,0.1,,False,False,False,2
+Human Rights & Identity,Health & Social Welfare,human_rights_cnt_l1,health_cnt,0.000122,3.51,***,True,True,True,2
+Justice & Accountability,Health & Social Welfare,justice_cnt_l1,health_cnt,0.000848,4.68,***,True,True,True,2
+Security & Conflict,Health & Social Welfare,security_cnt_l1,health_cnt,0.000368,0.97,,False,False,False,2
+Other,Health & Social Welfare,other_cnt_l1,health_cnt,0.000169,0.18,,False,False,False,2
+Religion & Belief,Health & Social Welfare,religion_cnt_l1,health_cnt,1.77e-05,0.36,,False,False,False,2
+Prices & Economy,Health & Social Welfare,economy_cnt_l1,health_cnt,0.000436,1.98,*,True,False,False,2
+Public Services & Infrastructure,Health & Social Welfare,pub_serv_cnt_l1,health_cnt,-0.000158,-0.84,,False,False,False,2
+International Solidarity & Foreign Policy,Health & Social Welfare,intl_solidarity_cnt_l1,health_cnt,0.000237,1.32,,False,False,False,2
+Environment,Health & Social Welfare,enviro_cnt_l1,health_cnt,-0.00098,-4.5,***,True,True,True,2
+Agriculture & Rural,Health & Social Welfare,agri_cnt_l1,health_cnt,0.000298,1.16,,False,False,False,2
+"Land, Property & Housing",Health & Social Welfare,land_cnt_l1,health_cnt,0.000296,0.23,,False,False,False,2
+Governance & Politics,Religion & Belief,gov_pol_cnt_l1,religion_cnt,-0.000168,-1.67,,False,False,False,2
+Education,Religion & Belief,edu_cnt_l1,religion_cnt,0.00177,2.08,*,True,False,False,2
+Labor,Religion & Belief,labor_cnt_l1,religion_cnt,0.000138,0.21,,False,False,False,2
+Human Rights & Identity,Religion & Belief,human_rights_cnt_l1,religion_cnt,0.000267,2.9,**,True,True,False,2
+Justice & Accountability,Religion & Belief,justice_cnt_l1,religion_cnt,-0.000187,-0.67,,False,False,False,2
+Security & Conflict,Religion & Belief,security_cnt_l1,religion_cnt,-0.000763,-2.06,*,True,False,False,2
+Health & Social Welfare,Religion & Belief,health_cnt_l1,religion_cnt,0.00125,6.39,***,True,True,True,2
+Other,Religion & Belief,other_cnt_l1,religion_cnt,0.000354,0.59,,False,False,False,2
+Prices & Economy,Religion & Belief,economy_cnt_l1,religion_cnt,-0.000505,-0.46,,False,False,False,2
+Public Services & Infrastructure,Religion & Belief,pub_serv_cnt_l1,religion_cnt,0.000395,1.01,,False,False,False,2
+International Solidarity & Foreign Policy,Religion & Belief,intl_solidarity_cnt_l1,religion_cnt,0.000298,2.12,*,True,False,False,2
+Environment,Religion & Belief,enviro_cnt_l1,religion_cnt,-8.72e-05,-0.53,,False,False,False,2
+Agriculture & Rural,Religion & Belief,agri_cnt_l1,religion_cnt,0.00089,5.12,***,True,True,True,2
+"Land, Property & Housing",Religion & Belief,land_cnt_l1,religion_cnt,0.00294,1.7,,False,False,False,2
+Governance & Politics,Prices & Economy,gov_pol_cnt_l1,economy_cnt,-3.99e-05,-0.16,,False,False,False,2
+Education,Prices & Economy,edu_cnt_l1,economy_cnt,0.000113,0.08,,False,False,False,2
+Labor,Prices & Economy,labor_cnt_l1,economy_cnt,0.00121,3.4,***,True,True,True,2
+Human Rights & Identity,Prices & Economy,human_rights_cnt_l1,economy_cnt,-0.000175,-0.18,,False,False,False,2
+Justice & Accountability,Prices & Economy,justice_cnt_l1,economy_cnt,0.00022,0.37,,False,False,False,2
+Security & Conflict,Prices & Economy,security_cnt_l1,economy_cnt,-0.00166,-1.05,,False,False,False,2
+Health & Social Welfare,Prices & Economy,health_cnt_l1,economy_cnt,-0.00152,-1.94,,False,False,False,2
+Other,Prices & Economy,other_cnt_l1,economy_cnt,0.00152,0.51,,False,False,False,2
+Religion & Belief,Prices & Economy,religion_cnt_l1,economy_cnt,0.000299,0.96,,False,False,False,2
+Public Services & Infrastructure,Prices & Economy,pub_serv_cnt_l1,economy_cnt,0.000564,1.8,,False,False,False,2
+International Solidarity & Foreign Policy,Prices & Economy,intl_solidarity_cnt_l1,economy_cnt,0.000535,1.95,,False,False,False,2
+Environment,Prices & Economy,enviro_cnt_l1,economy_cnt,0.000254,0.46,,False,False,False,2
+Agriculture & Rural,Prices & Economy,agri_cnt_l1,economy_cnt,-0.000138,-0.43,,False,False,False,2
+"Land, Property & Housing",Prices & Economy,land_cnt_l1,economy_cnt,-0.000398,-0.18,,False,False,False,2
+Governance & Politics,Public Services & Infrastructure,gov_pol_cnt_l1,pub_serv_cnt,0.00025,3.27,**,True,True,False,2
+Education,Public Services & Infrastructure,edu_cnt_l1,pub_serv_cnt,-0.00212,-3.14,**,True,True,False,2
+Labor,Public Services & Infrastructure,labor_cnt_l1,pub_serv_cnt,0.000794,2.08,*,True,False,False,2
+Human Rights & Identity,Public Services & Infrastructure,human_rights_cnt_l1,pub_serv_cnt,7.07e-05,0.98,,False,False,False,2
+Justice & Accountability,Public Services & Infrastructure,justice_cnt_l1,pub_serv_cnt,0.00106,2.41,*,True,False,False,2
+Security & Conflict,Public Services & Infrastructure,security_cnt_l1,pub_serv_cnt,-0.00167,-0.48,,False,False,False,2
+Health & Social Welfare,Public Services & Infrastructure,health_cnt_l1,pub_serv_cnt,0.00107,1.75,,False,False,False,2
+Other,Public Services & Infrastructure,other_cnt_l1,pub_serv_cnt,0.00193,0.87,,False,False,False,2
+Religion & Belief,Public Services & Infrastructure,religion_cnt_l1,pub_serv_cnt,0.000304,1.88,,False,False,False,2
+Prices & Economy,Public Services & Infrastructure,economy_cnt_l1,pub_serv_cnt,-0.00121,-1.57,,False,False,False,2
+International Solidarity & Foreign Policy,Public Services & Infrastructure,intl_solidarity_cnt_l1,pub_serv_cnt,-9.02e-05,-0.31,,False,False,False,2
+Environment,Public Services & Infrastructure,enviro_cnt_l1,pub_serv_cnt,-0.000541,-1.78,,False,False,False,2
+Agriculture & Rural,Public Services & Infrastructure,agri_cnt_l1,pub_serv_cnt,0.000381,1.15,,False,False,False,2
+"Land, Property & Housing",Public Services & Infrastructure,land_cnt_l1,pub_serv_cnt,-0.000407,-0.26,,False,False,False,2
+Governance & Politics,International Solidarity & Foreign Policy,gov_pol_cnt_l1,intl_solidarity_cnt,0.000303,3.3,***,True,True,True,2
+Education,International Solidarity & Foreign Policy,edu_cnt_l1,intl_solidarity_cnt,-0.000304,-0.71,,False,False,False,2
+Labor,International Solidarity & Foreign Policy,labor_cnt_l1,intl_solidarity_cnt,0.000108,0.65,,False,False,False,2
+Human Rights & Identity,International Solidarity & Foreign Policy,human_rights_cnt_l1,intl_solidarity_cnt,0.000246,2.02,*,True,False,False,2
+Justice & Accountability,International Solidarity & Foreign Policy,justice_cnt_l1,intl_solidarity_cnt,-8.29e-05,-0.28,,False,False,False,2
+Security & Conflict,International Solidarity & Foreign Policy,security_cnt_l1,intl_solidarity_cnt,0.000473,1.07,,False,False,False,2
+Health & Social Welfare,International Solidarity & Foreign Policy,health_cnt_l1,intl_solidarity_cnt,0.000934,1.67,,False,False,False,2
+Other,International Solidarity & Foreign Policy,other_cnt_l1,intl_solidarity_cnt,-0.000149,-0.68,,False,False,False,2
+Religion & Belief,International Solidarity & Foreign Policy,religion_cnt_l1,intl_solidarity_cnt,0.00015,2.97,**,True,True,False,2
+Prices & Economy,International Solidarity & Foreign Policy,economy_cnt_l1,intl_solidarity_cnt,0.00102,1.41,,False,False,False,2
+Public Services & Infrastructure,International Solidarity & Foreign Policy,pub_serv_cnt_l1,intl_solidarity_cnt,-0.000337,-1.03,,False,False,False,2
+Environment,International Solidarity & Foreign Policy,enviro_cnt_l1,intl_solidarity_cnt,0.000101,0.33,,False,False,False,2
+Agriculture & Rural,International Solidarity & Foreign Policy,agri_cnt_l1,intl_solidarity_cnt,0.000269,1.29,,False,False,False,2
+"Land, Property & Housing",International Solidarity & Foreign Policy,land_cnt_l1,intl_solidarity_cnt,-0.0017,-1.12,,False,False,False,2
+Governance & Politics,Environment,gov_pol_cnt_l1,enviro_cnt,-0.00015,-1.42,,False,False,False,2
+Education,Environment,edu_cnt_l1,enviro_cnt,0.00157,3.29,***,True,True,True,2
+Labor,Environment,labor_cnt_l1,enviro_cnt,-2.61e-05,-0.08,,False,False,False,2
+Human Rights & Identity,Environment,human_rights_cnt_l1,enviro_cnt,3.79e-05,0.56,,False,False,False,2
+Justice & Accountability,Environment,justice_cnt_l1,enviro_cnt,0.000213,0.99,,False,False,False,2
+Security & Conflict,Environment,security_cnt_l1,enviro_cnt,-0.000602,-2.65,**,True,True,False,2
+Health & Social Welfare,Environment,health_cnt_l1,enviro_cnt,0.00197,2.12,*,True,False,False,2
+Other,Environment,other_cnt_l1,enviro_cnt,0.00112,5.79,***,True,True,True,2
+Religion & Belief,Environment,religion_cnt_l1,enviro_cnt,0.000147,2.89,**,True,True,False,2
+Prices & Economy,Environment,economy_cnt_l1,enviro_cnt,0.000477,2.08,*,True,False,False,2
+Public Services & Infrastructure,Environment,pub_serv_cnt_l1,enviro_cnt,-0.000423,-2.02,*,True,False,False,2
+International Solidarity & Foreign Policy,Environment,intl_solidarity_cnt_l1,enviro_cnt,-0.000606,-6.65,***,True,True,True,2
+Agriculture & Rural,Environment,agri_cnt_l1,enviro_cnt,0.000204,1.32,,False,False,False,2
+"Land, Property & Housing",Environment,land_cnt_l1,enviro_cnt,-0.00228,-1.21,,False,False,False,2
+Governance & Politics,Agriculture & Rural,gov_pol_cnt_l1,agri_cnt,0.000198,2.79,**,True,True,False,2
+Education,Agriculture & Rural,edu_cnt_l1,agri_cnt,-0.000127,-0.22,,False,False,False,2
+Labor,Agriculture & Rural,labor_cnt_l1,agri_cnt,9.28e-05,0.4,,False,False,False,2
+Human Rights & Identity,Agriculture & Rural,human_rights_cnt_l1,agri_cnt,0.000154,2.0,*,True,False,False,2
+Justice & Accountability,Agriculture & Rural,justice_cnt_l1,agri_cnt,0.00112,3.0,**,True,True,False,2
+Security & Conflict,Agriculture & Rural,security_cnt_l1,agri_cnt,0.000422,1.43,,False,False,False,2
+Health & Social Welfare,Agriculture & Rural,health_cnt_l1,agri_cnt,-0.00147,-3.22,**,True,True,False,2
+Other,Agriculture & Rural,other_cnt_l1,agri_cnt,0.00175,2.13,*,True,False,False,2
+Religion & Belief,Agriculture & Rural,religion_cnt_l1,agri_cnt,2.95e-05,0.2,,False,False,False,2
+Prices & Economy,Agriculture & Rural,economy_cnt_l1,agri_cnt,0.00032,1.94,,False,False,False,2
+Public Services & Infrastructure,Agriculture & Rural,pub_serv_cnt_l1,agri_cnt,-0.00132,-3.2,**,True,True,False,2
+International Solidarity & Foreign Policy,Agriculture & Rural,intl_solidarity_cnt_l1,agri_cnt,0.000125,0.35,,False,False,False,2
+Environment,Agriculture & Rural,enviro_cnt_l1,agri_cnt,-0.000621,-1.76,,False,False,False,2
+"Land, Property & Housing",Agriculture & Rural,land_cnt_l1,agri_cnt,0.0064,2.29,*,True,False,False,2
+Governance & Politics,"Land, Property & Housing",gov_pol_cnt_l1,land_cnt,4.3e-05,0.33,,False,False,False,2
+Education,"Land, Property & Housing",edu_cnt_l1,land_cnt,0.000841,1.56,,False,False,False,2
+Labor,"Land, Property & Housing",labor_cnt_l1,land_cnt,0.000355,1.48,,False,False,False,2
+Human Rights & Identity,"Land, Property & Housing",human_rights_cnt_l1,land_cnt,0.000195,3.32,***,True,True,True,2
+Justice & Accountability,"Land, Property & Housing",justice_cnt_l1,land_cnt,0.00041,1.72,,False,False,False,2
+Security & Conflict,"Land, Property & Housing",security_cnt_l1,land_cnt,0.000103,0.4,,False,False,False,2
+Health & Social Welfare,"Land, Property & Housing",health_cnt_l1,land_cnt,-0.000168,-0.51,,False,False,False,2
+Other,"Land, Property & Housing",other_cnt_l1,land_cnt,0.00128,1.34,,False,False,False,2
+Religion & Belief,"Land, Property & Housing",religion_cnt_l1,land_cnt,0.000329,5.27,***,True,True,True,2
+Prices & Economy,"Land, Property & Housing",economy_cnt_l1,land_cnt,-0.000406,-0.68,,False,False,False,2
+Public Services & Infrastructure,"Land, Property & Housing",pub_serv_cnt_l1,land_cnt,-0.000122,-0.31,,False,False,False,2
+International Solidarity & Foreign Policy,"Land, Property & Housing",intl_solidarity_cnt_l1,land_cnt,0.000493,2.64,**,True,True,False,2
+Environment,"Land, Property & Housing",enviro_cnt_l1,land_cnt,-0.00023,-0.6,,False,False,False,2
+Agriculture & Rural,"Land, Property & Housing",agri_cnt_l1,land_cnt,-9.66e-07,-0.0,,False,False,False,2
+Governance & Politics,Other,gov_pol_cnt_l1,other_cnt,4.02e-05,0.33,,False,False,False,2
+Education,Other,edu_cnt_l1,other_cnt,0.000261,0.36,,False,False,False,2
+Labor,Other,labor_cnt_l1,other_cnt,0.00063,2.29,*,True,False,False,2
+Human Rights & Identity,Other,human_rights_cnt_l1,other_cnt,9.78e-05,1.64,,False,False,False,2
+Justice & Accountability,Other,justice_cnt_l1,other_cnt,0.000646,2.78,**,True,True,False,2
+Security & Conflict,Other,security_cnt_l1,other_cnt,-0.000411,-1.01,,False,False,False,2
+Health & Social Welfare,Other,health_cnt_l1,other_cnt,0.000647,1.99,*,True,False,False,2
+Religion & Belief,Other,religion_cnt_l1,other_cnt,6.52e-05,3.94,***,True,True,True,2
+Prices & Economy,Other,economy_cnt_l1,other_cnt,0.00113,2.19,*,True,False,False,2
+Public Services & Infrastructure,Other,pub_serv_cnt_l1,other_cnt,-0.000165,-0.63,,False,False,False,2
+International Solidarity & Foreign Policy,Other,intl_solidarity_cnt_l1,other_cnt,-0.00175,-5.71,***,True,True,True,2
+Environment,Other,enviro_cnt_l1,other_cnt,-0.000714,-3.36,***,True,True,True,2
+Agriculture & Rural,Other,agri_cnt_l1,other_cnt,0.000185,0.91,,False,False,False,2
+"Land, Property & Housing",Other,land_cnt_l1,other_cnt,0.000243,0.18,,False,False,False,2
