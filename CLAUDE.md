@@ -143,4 +143,9 @@ No build command required unless you add a CI step to regenerate HTML from the d
 
 ## GitHub
 
-Repository: `dw4085/worldwide-protest-diffusion` (public). Push updates to `main`; Vercel redeploys from the connected project.
+Repository: [dw4085/worldwide-protest-diffusion](https://github.com/dw4085/worldwide-protest-diffusion) (public). Push updates to `main`; Vercel redeploys from the connected project.
+
+## Live site
+
+- **Production:** https://worldwide-protest-diffusion.vercel.app/ (root URL opens the network visualization)
+- **Influence summary:** https://worldwide-protest-diffusion.vercel.app/protest_influence_summary.html
